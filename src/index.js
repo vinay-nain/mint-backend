@@ -19,7 +19,7 @@ app.set("MONGOURI", process.env.MONGO_URI);
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: "https://mint-inc.vercel.app/",
         methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
         credentials: true,
     }),
