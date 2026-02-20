@@ -21,7 +21,7 @@ const handleLoginSuccess = (user, res) => {
 
     if (isOAuth) {
         // this uri is changing and causing error
-        return res.redirect(`http://localhost:5175`);
+        return res.redirect(`https://mint-inc.vercel.app`);
     }
 
     return res.status(200).json({
