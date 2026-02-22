@@ -41,11 +41,12 @@ const createNewPost = async (req, res) => {
 const getUsersPosts = async (req, res) => {
     const { userId } = req.params;
     const posts = await Post.find({ owner: userId });
-    res.status(200).json({ message: posts });
+    res.status(200).json({ message: "posts fetched", data: posts });
 };
 
 const getPost = async (req, res) => {
     let postId = req.params.postId;
+    if (!postId) return res.status(400).json({ message: "post not found" });
     let post = await Post.findById(postId)
         .select("-__v -updatedAt")
         .populate("owner", "-password -provider -comments -updatedAt -__v");
@@ -70,10 +71,6 @@ const newComment = async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
-
-    console.log("body", req.body.comment);
-    console.log("user", user);
-    console.log("owner", req.body.author);
 
     let newComment = await Comment.create({
         ...req.body.comment,
@@ -110,14 +107,37 @@ const deleteComment = async (req, res) => {
 };
 
 const editPost = async (req, res) => {
-    let { postId, userId } = req.params;
-    let post = await Post.findById(postId)._doc;
-    let updatedPost = { ...post, ...req.body };
+    let { postId } = req.params;
+    if (!postId) return res.status(400).json({ message: "post not found" });
 
-    let newPost = await Post.findByIdAndUpdate(updatedPost._id, updatedPost, {
+    let post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "post not found" });
+
+    const parsedAddress = JSON.parse(req.body.post.address);
+    let geoResponse = await geoCodeAddress(parsedAddress);
+
+    const updatedData = {
+        ...req.body.post,
+        guests: JSON.parse(req.body.post.guests),
+        address: parsedAddress,
+        geometry: geoResponse.fullResponse.features[0].geometry,
+    };
+
+    // If new images are uploaded, append or replace existing ones
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map((file) => ({
+            url: file.path,
+            filename: file.filename,
+        }));
+        updatedData.images = [...post.images, ...newImages];
+    }
+
+    let updatedPost = await Post.findByIdAndUpdate(postId, updatedData, {
         new: true,
+        runValidators: true,
     });
-    res.status(200).json({ message: newPost });
+
+    res.status(200).json({ message: updatedPost });
 };
 
 const deletePost = async (req, res) => {

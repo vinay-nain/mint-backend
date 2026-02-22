@@ -4,7 +4,7 @@ import passportGoogle from "passport-google-oauth20";
 import User from "./models/User.js";
 import { verifyPass } from "./libs/passwordUtils.js";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({quiet: true});
 var GoogleStrategy = passportGoogle.Strategy;
 var LocalStrategy = passportLocal.Strategy;
 

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({ quiet: true });
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -19,7 +19,7 @@ app.set("MONGOURI", process.env.MONGO_URI);
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "https://mint-inc.vercel.app",
+        origin: "https://mintforeveryone.vercel.app",
         methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
         credentials: true,
     }),

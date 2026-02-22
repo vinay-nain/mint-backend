@@ -49,8 +49,10 @@ router.delete(
 router.get("/users/:userId", asyncWraper(listingsController.getUsersPosts));
 
 // edit the post
-router.patch(
-    "/posts/:userId/:postId",
+router.put(
+    "/posts/edit/:postId",
+    upload.array("post[images]", 5),
+    validatePost,
     asyncWraper(listingsController.editPost),
 );
 

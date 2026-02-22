@@ -11,6 +11,8 @@ const getUserComments = async (req, res) => {
     let comments = await User.findById(userId)
         .select("comments")
         .populate("comments");
+
+        console.log(comments)
     res.status(200).json({ message: "user comments", data: comments });
 };
 
