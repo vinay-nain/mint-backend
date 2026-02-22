@@ -10,18 +10,26 @@ const handleLoginSuccess = (user, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
+    // for production
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "prod",
-        sameSite: "lax",
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    // for local
+    // res.cookie("refreshToken", refreshToken, {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === "prod",
+    //     sameSite: "lax",
+    //     maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
 
     const isOAuth = user.provider === "google";
 
     if (isOAuth) {
-        // this uri is changing and causing error
-        return res.redirect(`https://mint-inc.vercel.app`);
+        return res.redirect(`https://mintforeveryone.vercel.app`);
     }
 
     return res.status(200).json({
