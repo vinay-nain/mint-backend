@@ -118,8 +118,8 @@ const authRegister = async (req, res, next) => {
 const authLogout = (req, res, next) => {
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "None",
         path: "/",
     });
 
